@@ -2,25 +2,23 @@ int redLED = 8;
 int greenLED = 9;
 int blueLED = 10;
 int yellowLED = 11;
-int blueLED2 = 12;
 void setup() {
   // put your setup code here, to run once:
   pinMode(redLED, OUTPUT);
   pinMode(greenLED, OUTPUT);
   pinMode(blueLED, OUTPUT);
   pinMode(yellowLED, OUTPUT);
-  pinMode(blueLED2, OUTPUT);
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
   int b;
-  int leds[] = {blueLED2, yellowLED, blueLED, greenLED, redLED}; 
-  for (int i = 0; i < 32; i++) {
+  int leds[] = {yellowLED, blueLED, greenLED, redLED}; 
+  for (int i = 0; i < 16; i++) {
     clear();
 
     int num = i;
-    for (int i = 0; i < 5; i++) {
+    for (int i = 0; i < 4; i++) {
       int remainder = num % 2;
       if (remainder == 1) {
         digitalWrite(leds[i], HIGH);
@@ -39,7 +37,6 @@ void clear() {
   digitalWrite(greenLED, LOW);
   digitalWrite(blueLED, LOW);
   digitalWrite(yellowLED, LOW);
-  digitalWrite(blueLED2, LOW);
 }
 
 
