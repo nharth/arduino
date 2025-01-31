@@ -9,7 +9,7 @@ int bluePin = 4;
 int redVal = 255;
 int greenVal = 255;
 int blueVal = 255;
-int numDecrements = 0;
+float dFact = 1;
 int stepVal = 15;
 int ledState = 1;
 bool redState = true;
@@ -26,24 +26,11 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-  if (redState) {
-    redVal = 255 - numDecrements * stepVal;
-  } else {
-    redVal = 0;
-  }
-  if (greenState) {
-    greenVal = 255 - numDecrements * stepVal;
-  } else {
-    greenVal = 0;
-  }
-  if (blueState) {
-    blueVal = 255 - numDecrements * stepVal;
-  } else {
-    blueVal = 0;
-  }
-  analogWrite(redPin, redVal);
-  analogWrite(greenPin, greenVal);
-  analogWrite(bluePin, blueVal);
+
+  analogWrite(redPin, redVal * dFact);
+  Serial.println(dFact);
+  analogWrite(greenPin, greenVal * dFact);
+  analogWrite(bluePin, blueVal * dFact);
 
   // 0 white
   // 1 red
@@ -100,18 +87,12 @@ void loop() {
   if (cmd.value == 0xFFA25D) {
     myCommand = "pwr";
     if (ledState == 1) {
-      redVal = 0;
-      greenVal = 0;
-      blueVal = 0;
+      setColorStates(0, 0, 0);
       ledState = 0;
-      numDecrements = 17;
     } else {
-      redVal = 255;
-      greenVal = 255;
-      blueVal = 255;
       ledState = 1;
-      numDecrements = 0;
       setColorStates(1, 1, 1);
+      dFact = 1;
     }
   }
   if (cmd.value == 0xFF629D) {
@@ -134,17 +115,19 @@ void loop() {
   }
   if (cmd.value == 0xFFE01F) {
     myCommand = "down";
-    if (ledState && numDecrements < 17) {
-      numDecrements++;
-    }
+    dFact *= 0.75;
   }
   if (cmd.value == 0xFFA857) {
     myCommand = "vol_min";
   }
   if (cmd.value == 0xFF906F) {
     myCommand = "up";
-    if (ledState && numDecrements > 0) {
-      numDecrements--;
+    dFact *= 1.33;
+    if (dFact > 1) {
+      dFact = 1;
+    }
+    if (dFact < 0.01) {
+      dFact = 0.01;
     }
   }
   if (cmd.value == 0xFF9867) {
@@ -158,7 +141,20 @@ void loop() {
 }
 
 void setColorStates(bool rState, bool gState, bool bState) {
-  redState = rState;
-  greenState = gState;
-  blueState = bState;
+  if (rState) {
+    redVal = 255;
+  }  else {
+    redVal = 0;
+  }
+  if (gState) {
+    greenVal = 255;
+  } else {
+    greenVal = 0;
+  }
+  if (bState) {
+    blueVal = 255;
+  } else {
+    blueVal = 0;
+  }
+
 }
